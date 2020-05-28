@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/pics">
+        <file>action.png</file>
+        <file>startwindow.jpg</file>
+        <file>map2.png</file>
+        <file>renyu.png</file>
+        <file>setTower.png</file>
+        <file>tower1.png</file>
+    </qresource>
+    <qresource prefix="/sounds">
+        <file>hdl.mp3</file>
+    </qresource>
+</RCC>
