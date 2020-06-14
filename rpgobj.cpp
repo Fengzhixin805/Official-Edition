@@ -2,13 +2,14 @@
 #include "icon.h"
 #include <iostream>
 
-void RPGObj::initObj(string type)
+ RPGObj::RPGObj(string type,QPoint x)
 {
+     this->_pos=x;
     //TODO 所支持的对象类型应定义为枚举
     if (type.compare("setTower")==0){
         this->_eatable =false;
     }
-    else if (type.compare("Tower")==0){
+    else if (type.compare("Tower1")==0){
         this->_eatable = false;
     }
     else{

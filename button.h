@@ -3,17 +3,28 @@
 
 #include <QWidget>
 #include <QPushButton>
+#include<QPixmap>
+#include<QString>
 #include"rpgobj.h"
 
 class Button : public QPushButton
 {
     Q_OBJECT
 public:
-   Button(QString x);
-   void mouseMoveEvent(QMouseEvent *event);         // 鼠标移动事件
+   Button(QString x,QPoint pos,int type);
+   void draw(QPainter *painter){
+       painter->drawPixmap(_pos,pixmap);
+   }
+   QPoint getPos(){return _pos;}
+
+   int _type;
+private:
+   QPoint _pos;
+   QPixmap pixmap;
 signals:
 
 public slots:
+
 };
 
 #endif // BUTTON_H

@@ -1,26 +1,19 @@
 #include "button.h"
+#include"tower.h"
 #include<QPixmap>
 #include<QMouseEvent>
 #include<QMenu>
+#include<QAction>
 
-Button::Button(QString x): QPushButton(0){
+Button::Button(QString x,QPoint pos,int type): QPushButton(0){
     QPixmap pixmap(x);
     this->setFixedSize(pixmap.width(),pixmap.height());
     this->setStyleSheet("QPushButton{border.Qpx;}");
     this->setIcon(pixmap);
     this->setIconSize(QSize(pixmap.width(),pixmap.height()));
+    this->_pos=pos;
+    this->pixmap=x;
+    _type=type;
 }
 
-void Button::mouseMoveEvent(QMouseEvent *event)
-{
-    const QRect customBtnRect = this->geometry();
-    const QPoint mousePos = event->pos() + customBtnRect.topLeft();
 
-    if (customBtnRect.contains(mousePos))
-    {
-        if (this->menu())
-        {
-            this->menu()->popup(this->mapToGlobal(QPoint(0, 0)));
-        }
-    }
-}

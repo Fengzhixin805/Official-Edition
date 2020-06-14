@@ -6,8 +6,15 @@
         <file>renyu.png</file>
         <file>setTower.png</file>
         <file>tower1.png</file>
+        <file>monster1.png</file>
+        <file>tower2.png</file>
+        <file>setTower2.png</file>
+        <file>bullet.png</file>
+        <file>monster2.png</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>hdl.mp3</file>
+        <file>crash.mp3</file>
+        <file>shout.mp3</file>
     </qresource>
 </RCC>

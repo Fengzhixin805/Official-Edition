@@ -13,9 +13,8 @@ using namespace std;
 class RPGObj
 {
 public:
-    RPGObj(){}
+    RPGObj(string type,QPoint x);
 
-    void initObj(string type);
     void show(QPainter * painter);
 
     void setPos(QPoint y){this->_pos=y;}

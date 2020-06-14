@@ -5,6 +5,8 @@
 #-------------------------------------------------
 
 QT       += core gui
+QT       += multimedia
+CONFIG   += C++11
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -27,18 +29,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     button.cpp \
-    icon.cpp \
     rpgobj.cpp \
     mw1.cpp \
-    tower.cpp
+    myobject.cpp \
+    tower.cpp \
+    icon.cpp \
+    bullet.cpp
 
 HEADERS += \
         mainwindow.h \
     button.h \
-    icon.h \
     rpgobj.h \
     mw1.h \
-    tower.h
+    myobject.h \
+    tower.h \
+    icon.h \
+    bullet.h
 
 FORMS += \
         mainwindow.ui \

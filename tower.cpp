@@ -1,34 +1,49 @@
 #include "tower.h"
+#include "myobject.h"
+#include"rpgobj.h"
+#include"mw1.h"
+#include<QAction>
 
-Tower::Tower()
+Tower::Tower(int type,QPoint x):QPushButton(0)
 {
-
+    _pos=x;
+    switch (type)
+    {
+    case 1:
+    this->type=1;
+    _money= 10;
+    _range=250;
+    setPixmap("://pics/tower1.png");
+    break;
+     case 2:
+     this->type=2;    
+    _money= 15;
+    _range=350;
+    setPixmap(("://pics/tower2.png"));
+    break;
+     }
+    this->setContextMenuPolicy(Qt::ActionsContextMenu);
+    QAction* up=new QAction(this);
+    up->setText("升级");
+    this->addAction(up);
+    connect(up,&QAction::triggered,this,[=](){
+        emit choose_up();
+    });
 }
 
-Tower::Tower(QPoint pos,string tp):  _hasTower(false) {
-    this->setPos(pos);
-    this->initObj(tp);
+void Tower::setArgu(int rg,int mny){
+    _range=rg;
+    _money=mny;
 }
 
-void Tower::setPower(int rg,int dmg,int rt){
-    this->_damage=dmg;
-    this->_range=rg;
-    this->_rate=rt;
+MyObject* Tower::GetAimsMonster() const //返回当前防御塔的目标怪物
+{
+    return aimsmon;
 }
 
-void Tower:: draw(QPainter *painter){
-
-    painter->save();
-    painter->setPen(Qt::white);
-    // 绘制攻击范围
-    painter->drawEllipse(this->getPos(), this->getRange(), this->getRange());
-
-    // 绘制偏转坐标,由中心+偏移=左上
-    // 尺寸大小派上用场了,当然也可以直接获取图片大小,是一样的
-    static const QPoint offsetPoint(65 / 2, 70 / 2);
-    // 绘制炮塔并选择炮塔
-    // 这里将坐标原点移到m_pos,绘制的适合,就要加上那个偏移点到左上角
-    painter->translate(this->getPos());
-    painter->drawPixmap(offsetPoint,this->getObjPath() );
-    painter->restore();
+void Tower::SetAimsMonster(MyObject* mon)  //设置当前防御塔的目标怪物
+{
+    aimsmon = mon;
 }
+
+
