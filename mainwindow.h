@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QPushButton>
+#include<QLabel>
+#include"button.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +33,5 @@ signals:
 public slots:
 
 };
-
 
 #endif // MAINWINDOW_H

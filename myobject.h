@@ -31,12 +31,12 @@ public:
    void SetHealth(int x){_hp=x;}
    int GetPower(){return _power;}
 
+   void Getattacked(int x){_hp=_hp-x;}
    int F=-1;//控制monster行走的计步器
 
    QPoint _nowpos;
    QPixmap pixmap;
 
-//已修改成公有成员
    int _maxhp;//初始血量
    int _id;
    int _hp;//现在血量

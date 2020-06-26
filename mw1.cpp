@@ -2,6 +2,7 @@
 #include "ui_mw1.h"
 #include"tower.h"
 #include"button.h"
+#include"mw2.h"
 #include<QRectF>
 #include<QTime>
 #include<QTimer>
@@ -14,6 +15,7 @@
 #include<QPalette>
 #include<QSignalMapper>
 #include<QDebug>
+#include<QSound>
 int M=0;
 double GetDistance(int X1,int Y1,int X2,int Y2){
     return abs(sqrt((((X1) - (X2)) * ((X1) - (X2))) + (((Y1) - (Y2)) * ((Y1) - (Y2)))));
@@ -23,9 +25,8 @@ MW1::MW1(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MW1)
 {
-   // setFixedSize(800, 600);
+    setFixedSize(800, 600);
     ui->setupUi(this);
-    innitBtns();
     innitBtn();
     drawlabel();
 
@@ -34,27 +35,27 @@ MW1::MW1(QWidget *parent) :
     player->setVolume(30);
     player->play();
 
-
-
-    timer2 = new QTimer(this);      //用于插入怪物定时器
+    //用于插入怪物定时器
+    timer2 = new QTimer(this);
     connect(timer2,SIGNAL(timeout()),this,SLOT(addmonster()));
     timer2->start(5000);
     timer2->setInterval(1500);
 
+    //怪兽移动和受击判断
     timer1=new QTimer(this);
     connect(timer1,SIGNAL(timeout()),this,SLOT(Move()));
-    //Move()为自定义槽函数
-    timer1->start(5000);
-    timer1->setInterval(1000);     //时间可设置难度
+    connect(timer1,&QTimer::timeout,this,&MW1::attacked);//Move()为自定义槽函数
+    timer1->start(1000);
+   // timer1->setInterval(1000);     //时间可设置难度
 
     QTimer* updt2=new QTimer(this);
     connect(updt2,SIGNAL(timeout()),this,SLOT(bulletadd()));
-    updt2->start(800);
+    updt2->start(1000);
     //子弹运动
     QTimer* updt=new QTimer(this);
     connect(updt,&QTimer::timeout,this,&MW1::updateScreen);
     connect(updt,SIGNAL(timeout()),this,SLOT(deletBullet()));
-    updt->start(250);
+    updt->start(100);
 }
 
 MW1::~MW1()
@@ -87,31 +88,23 @@ void MW1::DrawTower(QPainter* painter)
          painter->drawPixmap(defei->getPos(),defei->pixmap);
          painter->setPen(QPen(Qt::white));  //使用白色画出范围
          painter->setCompositionMode(QPainter::CompositionMode_SourceOver);
-         //就是和这里的范围圈怎么调整都不准确！！
          painter->drawEllipse(defei->getPos().x()-defei->getRange()*2/5, defei->getPos().y()-defei->getRange()*2/5,defei->getRange(), defei->getRange());
-        //画出所有防御塔子弹
-      /*   foreach (BulletStr* bulli, defei->GetBulletVec()) {
-         painter->drawPixmap(bulli->coor.x, bulli->coor.y, defei->GetBulletWidth(), defei->GetBulletHeight(),QPixmap(defei->GetBulletPath()));
-         }*/
     }
 }
 
 //绘画事件
 void MW1::paintEvent(QPaintEvent *){
- /*//输赢界面
-    if (m_gameEnd ||m_gameWin)
-    {
-        QString text = m_gameEnd ? "YOU LOST!!!" : "YOU WIN!!!";
-        QPainter painter(this);
-        painter.setPen(QPen(Qt::red));
-        painter.drawText(rect(), Qt::AlignCenter, text);
-        return;
-    }*/
+    if(_money>500){
+        MW2 *win =new MW2;
+        this->close();
+        win->show();
+    }
     QPainter painter(this);
     QPixmap pixmap("://pics/map2.png");
     painter.drawPixmap(0,0,this->width(),this->height(),pixmap);
-    QPixmap renyu("://pics/renyu.png");
+    QPixmap renyu("://pics/home.png");
     painter.drawPixmap(700,325,100,125,renyu);
+    //画塔
     DrawTower(&painter);
    //画按钮
     int a=this->_buttonlist.size();
@@ -126,6 +119,10 @@ void MW1::paintEvent(QPaintEvent *){
     //画子弹
     foreach (Bullet* x, _bulletlist) {
         x->draw(&painter);
+    }
+    //画轰击
+    foreach (Explosion* x, _plosionlist) {
+        x->show(&painter);
     }
 }
 
@@ -223,9 +220,7 @@ void MW1::Move(){
         continue;
     }
     if(x->F<25){
-        x->move(4,1);
-        DeductionLife(x->GetPower());
-        _monsterlist.removeOne(x);     //但删除失败
+        x->move(4,1);       
         this->repaint();
     }
 }
@@ -243,8 +238,8 @@ inline bool MW1::DeductionMoney(int money)
 }
 inline bool MW1::DeductionLife(int life)
 {
-    if(_life-life<0)return true;
-    this->_money -= life; //扣除生命
+    if(_life-life>0)return true;
+    this->_life -= life; //扣除生命
     lifelable->setText(QString("生命：%1").arg(this->_life)); //刷新标签文本
     update();
     return false;
@@ -253,8 +248,8 @@ inline bool MW1::DeductionLife(int life)
 //增加怪兽
 void MW1::addmonster()
 {
-    if(_monsterlist.size()<6){
-    int d=rand()%2+1;
+    if(_monsterlist.size()<10){
+    int d=rand()%3+1;
     setmonster(d,QPoint(200,-75));
 }
 }
@@ -263,44 +258,10 @@ void MW1::setmonster(int type,QPoint x){
     _monsterlist.push_back(monster);
 }
 
-//加载放塔键
-void MW1::innitBtns(){
-
-    for(int i=0;i<3;i++){
-    Button *bt =new Button("://pics/setTower2.png",QPoint(267,75+150*i),2);
-    bt->setParent(this);
-    bt->move(267,75+150*i);
-    _buttonlist.push_back(bt);
-
-    Button *bt2 =new Button("://pics/setTower.png",QPoint(400,150+150*i),1);
-    bt2->setParent(this);
-    bt2->move(400,150+150*i);    
-    _buttonlist.push_back(bt2);
-    }
-
-    Button *bt3 =new Button("://pics/setTower2.png",QPoint(135,225),2);
-    bt3->setParent(this);
-    bt3->move(135,225);
-    _buttonlist.push_back(bt3);
-
-
-    Button *bt4 =new Button("://pics/setTower2.png",QPoint(530,150),2);
-    bt4->setParent(this);
-    bt4->move(530,150);
-    _buttonlist.push_back(bt4);
-
-    Button *bt5 =new Button("://pics/setTower.png",QPoint(535,375),1);
-    bt5->setParent(this);
-    bt5->move(535,375);
-    _buttonlist.push_back(bt5);
-}
-
 //测试按钮，以下内容是不存入QVector里的两个测试按钮
 void MW1::setTower(){
     Tower* x=new Tower(1,QPoint(135,75));
-    connect(x,&Tower::choose_up,this,[=](){
-        x->upup();
-    });
+    DeductionMoney(x->getMoney());
    _towerlist.push_back(x);
    this->update();
 }
@@ -308,6 +269,70 @@ void MW1::setTower(){
 void MW1::setTower_(){
     Tower* x=new Tower(1,QPoint(130,455));
     connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower__(){
+    Tower* x=new Tower(1,QPoint(267,75));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower3(){
+    Tower* x=new Tower(2,QPoint(135,225));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower4(){
+    Tower* x=new Tower(2,QPoint(530,150));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower5(){
+    Tower* x=new Tower(1,QPoint(535,375));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower6(){
+    Tower* x=new Tower(1,QPoint(267,225));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower7(){
+    Tower* x=new Tower(1,QPoint(267,375));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower8(){
+    Tower* x=new Tower(2,QPoint(400,150));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower9(){
+    Tower* x=new Tower(1,QPoint(400,300));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
+    _towerlist.push_back(x);
+}
+
+void MW1::setTower10(){
+    Tower* x=new Tower(2,QPoint(400,450));
+    connect(x,&Button::clicked,x,&Tower::upup);
+    DeductionMoney(x->getMoney());
     _towerlist.push_back(x);
 }
 
@@ -324,43 +349,71 @@ void MW1::innitBtn(){
     connect(bt1,&Button::clicked,this,&MW1::setTower);
     connect(bt1,&Button::released,bt1,&Button::hide);
 
+    Button *bt =new Button("://pics/setTower.png",QPoint(267,75),1);
+    bt->setParent(this);
+    bt->move(267,75);
+    connect(bt,&Button::clicked,this,&MW1::setTower__);
+    connect(bt,&Button::released,bt,&Button::hide);
 
-    foreach (Button *iter, _buttonlist) {
-        if((iter)->_type==1){
-    connect (iter, &Button::clicked, this ,[=](){
-      setTower1((iter)->getPos());
-    }) ;
-    connect(iter,&Button::released,iter,&Button::hide);
-        }
-       else{
-            connect(iter,&Button::clicked,this,[=](){
-                setTower2((iter)->getPos());
-            });
-            connect(iter,&Button::released,iter,&Button::hide);
-    }
-    }
-}
+    Button *bt6 =new Button("://pics/setTower.png",QPoint(267,225),1);
+    bt6->setParent(this);
+    bt6->move(267,225);
+    connect(bt6,&Button::clicked,this,&MW1::setTower6);
+    connect(bt6,&Button::released,bt6,&Button::hide);
 
-//放置塔
-void MW1::setTower1(QPoint pos){
-    Tower* x=new Tower(1,pos);
-    _towerlist.push_back(x);
-    x->setParent(this);
-    DeductionMoney(x->getMoney());
-    update();
-}
-void MW1::setTower2(QPoint pos){
-    Tower* x=new Tower(2,pos);
-    DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
-    x->setParent(this);
-    update();
+    Button *bt7 =new Button("://pics/setTower.png",QPoint(267,375),1);
+    bt7->setParent(this);
+    bt7->move(267,375);
+    connect(bt7,&Button::clicked,this,&MW1::setTower7);
+    connect(bt7,&Button::released,bt7,&Button::hide);
+
+    Button *bt8 =new Button("://pics/setTower2.png",QPoint(400,150),2);
+    bt8->setParent(this);
+    bt8->move(400,150);
+    connect(bt8,&Button::clicked,this,&MW1::setTower8);
+    connect(bt8,&Button::released,bt8,&Button::hide);
+
+    Button *bt9 =new Button("://pics/setTower.png",QPoint(400,300),1);
+    bt9->setParent(this);
+    bt9->move(400,300);
+    connect(bt9,&Button::clicked,this,&MW1::setTower9);
+    connect(bt9,&Button::released,bt9,&Button::hide);
+
+    Button *bt10 =new Button("://pics/setTower2.png",QPoint(400,450),2);
+    bt10->setParent(this);
+    bt10->move(400,450);
+    connect(bt10,&Button::clicked,this,&MW1::setTower10);
+    connect(bt10,&Button::released,bt10,&Button::hide);
+
+    Button *bt3 =new Button("://pics/setTower2.png",QPoint(135,225),2);
+    bt3->setParent(this);
+    bt3->move(135,225);
+    connect(bt3,&Button::clicked,this,&MW1::setTower3);
+    connect(bt3,&Button::released,bt3,&Button::hide);
+
+    Button *bt4 =new Button("://pics/setTower2.png",QPoint(530,150),2);
+    bt4->setParent(this);
+    bt4->move(530,150);
+    connect(bt4,&Button::clicked,this,&MW1::setTower4);
+    connect(bt4,&Button::released,bt4,&Button::hide);
+
+    Button *bt5 =new Button("://pics/setTower.png",QPoint(535,375),1);
+    bt5->setParent(this);
+    bt5->move(535,375);
+    connect(bt5,&Button::clicked,this,&MW1::setTower5);
+    connect(bt5,&Button::released,bt5,&Button::hide);
 }
 
 //添加子弹进入qvector
-void MW1::addBullet(QPoint start,QPoint end,double distance){
-    Bullet* x=new Bullet(start,end,distance);
+void MW1::addBullet(QPoint start,QPoint end){
+    Bullet* x=new Bullet(start,end);
     _bulletlist.push_back(x);
+    update();
+}
+
+void MW1::addplosion(QPoint position){
+    Explosion* x=new Explosion(position);
+    _plosionlist.push_back(x);
     update();
 }
 
@@ -375,26 +428,68 @@ void MW1::updateScreen(){
 //子弹动画
 void MW1::bulletadd(){
     foreach (Tower* defei, _towerlist) {
+        QPoint _st=QPoint(defei->getPos().x()+30,defei->getPos().y()+35);
+        int n=_monsterlist.size();
         if(defei->type==2){
-            continue;
+            for(int i=n-1;i>=0;i--){
+                double dis=GetDistance(_monsterlist.at(i)->GetX()+30,_monsterlist.at(i)->GetY()+35,_st.x(),_st.y());
+                if(dis<defei->getRange()&&_plosionlist.size()<=3){
+                    addplosion(_monsterlist.at(i)->getNow());
+                }
+            }
         }
-    QPoint _st=QPoint(defei->getPos().x()+30,defei->getPos().y()+35);
-    int n=_monsterlist.size();
+        else{
     for(int i=n-1;i>=0;i--){
         double dis=GetDistance(_monsterlist.at(i)->GetX()+30,_monsterlist.at(i)->GetY()+35,_st.x(),_st.y());
         if(dis<defei->getRange()){
-            addBullet(_st,_monsterlist.at(i)->getNow(),dis);
+        addBullet(_st,_monsterlist.at(i)->getNow());
         }
     }
+        }
     }
 }
+
 //判断出界或击中删除子弹
 void MW1::deletBullet(){
     foreach (Bullet* x, _bulletlist) {
         double y=GetDistance(x->getPosnow().x(),x->getPosnow().y(),x->getPosStart().x(),x->getPosStart().y());
-        if(x->getPosnow()==x->getPosend()||y>150){
+        if(x->getPosnow()==x->getPosend()||y>125){
             _bulletlist.removeOne(x);
             update();
         }
+    }
+}
+
+//怪兽减血
+void MW1::attacked(){
+    int n=_monsterlist.size();
+    for(int i=n-1;i>=0;i--){        
+            if(_monsterlist.at(i)->GetHealth()<0)
+            {
+             _monsterlist.remove(i);
+             DeductionMoney(-_monsterlist.at(i)->Getmny());
+             update();
+            }
+            foreach (Bullet* x, _bulletlist) {
+            double dis=GetDistance(_monsterlist.at(i)->getNow().x(),_monsterlist.at(i)->getNow().y(),x->getPosnow().x()+30,x->getPosnow().y()+35);           
+            if(dis<30){
+                _bulletlist.removeOne(x);
+                _monsterlist.at(i)->Getattacked(20);
+                update();
+            }
+            }
+        foreach(Explosion* y,_plosionlist){
+            if(_monsterlist.at(i)->getNow()==y->getPos()){
+                _plosionlist.removeOne(y);
+                delete y;
+                _monsterlist.at(i)->Getattacked(80);
+                update();
+            }
+        }
+     if(_monsterlist.at(i)->getNow()==QPoint(720,375)){
+        _life=_life-15;
+        _monsterlist.remove(i);
+        update();
+    }
     }
 }

@@ -16,10 +16,12 @@ public:
        painter->drawPixmap(_pos,pixmap);
    }
    QPoint getPos(){return _pos;}
-
    int _type;
+
 private:
    QPoint _pos;
+   QPoint _stpos;
+   QPoint _end;
    QPixmap pixmap;
 signals:
 

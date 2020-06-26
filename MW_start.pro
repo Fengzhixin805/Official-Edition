@@ -7,6 +7,7 @@
 QT       += core gui
 QT       += multimedia
 CONFIG   += C++11
+CONFIG   += resources_big
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -29,26 +30,27 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     button.cpp \
-    rpgobj.cpp \
     mw1.cpp \
     myobject.cpp \
     tower.cpp \
-    icon.cpp \
-    bullet.cpp
+    bullet.cpp \
+    explosion.cpp \
+    mw2.cpp
 
 HEADERS += \
         mainwindow.h \
     button.h \
-    rpgobj.h \
     mw1.h \
     myobject.h \
     tower.h \
-    icon.h \
-    bullet.h
+    bullet.h \
+    explosion.h \
+    mw2.h
 
 FORMS += \
         mainwindow.ui \
-    mw1.ui
+    mw1.ui \
+    mw2.ui
 
 RESOURCES += \
-    resources.qrc
+resources.qrc

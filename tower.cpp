@@ -11,24 +11,18 @@ Tower::Tower(int type,QPoint x):QPushButton(0)
     {
     case 1:
     this->type=1;
-    _money= 10;
+    _money= 20;
     _range=250;
     setPixmap("://pics/tower1.png");
     break;
      case 2:
      this->type=2;    
-    _money= 15;
+    _money= 30;
     _range=350;
     setPixmap(("://pics/tower2.png"));
     break;
      }
-    this->setContextMenuPolicy(Qt::ActionsContextMenu);
-    QAction* up=new QAction(this);
-    up->setText("升级");
-    this->addAction(up);
-    connect(up,&QAction::triggered,this,[=](){
-        emit choose_up();
-    });
+
 }
 
 void Tower::setArgu(int rg,int mny){
@@ -36,14 +30,5 @@ void Tower::setArgu(int rg,int mny){
     _money=mny;
 }
 
-MyObject* Tower::GetAimsMonster() const //返回当前防御塔的目标怪物
-{
-    return aimsmon;
-}
-
-void Tower::SetAimsMonster(MyObject* mon)  //设置当前防御塔的目标怪物
-{
-    aimsmon = mon;
-}
 
 

@@ -5,7 +5,6 @@
 #include <QPaintEvent>
 #include <QPushButton>
 #include <QPixmap>
-#include "button.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,11 +13,12 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     this->setFixedSize(800,600);
     ui->setupUi(this);
+    MW1 *map2 =new MW1;
 
     Button1 *bt =new Button1("://pics/action.png");
     bt->setParent(this);
     bt->move(300,350);
-    MW1 *map2 =new MW1;
+
     connect(bt,&QPushButton::clicked,this,[=](){
         this->close();
         map2->show();

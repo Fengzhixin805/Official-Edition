@@ -1,11 +1,11 @@
 #include "bullet.h"
 #include<QVector2D>
-Bullet::Bullet(QPoint startPos,QPoint EndPos,double distance):QObject(0),_pixmap("://pics/bullet.png")
+Bullet::Bullet(QPoint startPos,QPoint EndPos):QObject(0),_pixmap("://pics/bullet.png")
 {
     _start=startPos;
     _end=EndPos;
     _currentPos=startPos;
-    speed=(int)distance/4;
+    speed=8;//(int)distance/10;
 }
 
 void Bullet::move(){

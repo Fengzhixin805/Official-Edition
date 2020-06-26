@@ -9,7 +9,7 @@ class Bullet : public QObject
 {
     Q_OBJECT
 public:
-   Bullet(QPoint startPos,QPoint EndPos,double distance);
+   Bullet(QPoint startPos,QPoint EndPos);
 
    void move();
    void draw(QPainter* painter);

@@ -4,6 +4,7 @@
 #include<QMouseEvent>
 #include<QMenu>
 #include<QAction>
+#include<QVector2D>
 
 Button::Button(QString x,QPoint pos,int type): QPushButton(0){
     QPixmap pixmap(x);
@@ -12,8 +13,9 @@ Button::Button(QString x,QPoint pos,int type): QPushButton(0){
     this->setIcon(pixmap);
     this->setIconSize(QSize(pixmap.width(),pixmap.height()));
     this->_pos=pos;
+    this->_stpos=pos;
     this->pixmap=x;
+    this->_end=_stpos+QPoint(pos.x(),600);
     _type=type;
 }
-
 

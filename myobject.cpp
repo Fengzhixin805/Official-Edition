@@ -11,16 +11,23 @@ MyObject::MyObject(int type,QPoint now) : QObject(0)
     case 1: //刀叉怪
         _hp = 100;   //生命值
         _maxhp=100;
-        _my= 30;
+        _my= 10;
         _power=10;
         setpixmap("://pics/monster1");
         break;
     case 2: //绿龙
-        _hp=50;
-        _maxhp=50;
+        _hp=150;
+        _maxhp=150;
         _my=20;
         _power=20;
         setpixmap(("://pics/monster2"));
+        break;
+    case 3: //木乃伊
+        _hp=200;
+        _maxhp=200;
+        _my=30;
+        _power=25;
+        setpixmap(("://pics/monster3"));
         break;
 }
 }
@@ -34,10 +41,10 @@ void MyObject::draw(QPainter *painter){
         // 绘制血条
         painter->setPen(Qt::NoPen);
         painter->setBrush(Qt::red);
-        QRect healthBarBackRect(healthBarPoint, QSize(Health_Bar_Width, 2));
+        QRect healthBarBackRect(healthBarPoint, QSize(Health_Bar_Width, 5));
         painter->drawRect(healthBarBackRect);
         painter->setBrush(Qt::green);
-        QRect healthBarRect(healthBarPoint, QSize((double)this->_hp / this->_maxhp * Health_Bar_Width, 2));
+        QRect healthBarRect(healthBarPoint, QSize((double)this->_hp / this->_maxhp * Health_Bar_Width, 5));
         painter->drawRect(healthBarRect);
 
 }

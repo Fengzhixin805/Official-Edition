@@ -3,7 +3,6 @@
         <file>action.png</file>
         <file>startwindow.jpg</file>
         <file>map2.png</file>
-        <file>renyu.png</file>
         <file>setTower.png</file>
         <file>tower1.png</file>
         <file>monster1.png</file>
@@ -11,9 +10,15 @@
         <file>setTower2.png</file>
         <file>bullet.png</file>
         <file>monster2.png</file>
+        <file>home.png</file>
+        <file>explosion_.png</file>
+        <file>monster3.png</file>
+        <file>zuanshi.png</file>
+        <file>win.jpg</file>
     </qresource>
     <qresource prefix="/sounds">
         <file>hdl.mp3</file>
+        <file>reneyu.wav</file>
         <file>crash.mp3</file>
         <file>shout.mp3</file>
     </qresource>
