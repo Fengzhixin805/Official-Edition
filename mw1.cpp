@@ -261,79 +261,112 @@ void MW1::setmonster(int type,QPoint x){
 //测试按钮，以下内容是不存入QVector里的两个测试按钮
 void MW1::setTower(){
     Tower* x=new Tower(1,QPoint(135,75));
+    if(_money-x->getMoney()>=0){
     DeductionMoney(x->getMoney());
    _towerlist.push_back(x);
-   this->update();
+   this->update();}
+    else
+        delete x;
 }
 
 void MW1::setTower_(){
     Tower* x=new Tower(1,QPoint(130,455));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower__(){
     Tower* x=new Tower(1,QPoint(267,75));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower3(){
     Tower* x=new Tower(2,QPoint(135,225));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower4(){
     Tower* x=new Tower(2,QPoint(530,150));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower5(){
     Tower* x=new Tower(1,QPoint(535,375));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower6(){
     Tower* x=new Tower(1,QPoint(267,225));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower7(){
     Tower* x=new Tower(1,QPoint(267,375));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower8(){
     Tower* x=new Tower(2,QPoint(400,150));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower9(){
     Tower* x=new Tower(1,QPoint(400,300));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::setTower10(){
     Tower* x=new Tower(2,QPoint(400,450));
+    if(_money-x->getMoney()>=0){
     connect(x,&Button::clicked,x,&Tower::upup);
     DeductionMoney(x->getMoney());
-    _towerlist.push_back(x);
+    _towerlist.push_back(x);}
+    else
+        delete x;
 }
 
 void MW1::innitBtn(){
