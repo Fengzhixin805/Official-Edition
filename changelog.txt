@@ -40,7 +40,7 @@ bug:
 1.MW1中增加函数attacked，实现怪兽受击减血，并更新资源金币
 
 最终版本：6.2.4
-1.删除icon、rjpg类
+1.删除icon、rpgobj类
 2.增加explosion类，修改attacked函数
 3.修复放塔按钮bug
 4.新增MW2胜利界面（金币积攒到500胜利）
